@@ -13,6 +13,14 @@ public class SkeletonTile extends FindingTile{
         super(TileType.SKELETON);
         setAge(age);
         setHalf(half);
+        if(age.equals("Adult") && half.equals("Upper"))
+            setImage("src\\resources\\skeleton_big_top.png");
+        else if(age.equals("Adult") && half.equals("Lower"))
+            setImage("src\\resources\\skeleton_big_bottom.png");
+        else if(age.equals("Kid") && half.equals("Upper"))
+            setImage("src\\resources\\skeleton_small_top.png");
+        else
+            setImage("src\\resources\\skeleton_small_bottom.png");
     }
 
     /**

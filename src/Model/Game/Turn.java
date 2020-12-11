@@ -15,7 +15,6 @@ public class Turn{
      */
     public Turn(Player P1, Player P2, Player P3, Player P4){
         int num = (int)(random() * 4) + 1;
-        System.out.println(num);
         if(num == 1) this.player = P1;
         else if(num == 2) this.player = P2;
         else if(num == 3) this.player = P3;

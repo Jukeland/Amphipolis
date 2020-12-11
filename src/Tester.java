@@ -8,15 +8,14 @@ public class Tester {
     public static void main(String[] args){
 
         GUI g = new GUI();
-
-        /*
+/*
         Controller cont = new Controller();
         Bag hello = new Bag();
         Tile geia = new AmphoraTile(AmphoraTileColor.BLUE);
-        Tile geia1 = new AmphoraTile(AmphoraTileColor.BROWN);
+        Tile geia1 = new AmphoraTile(AmphoraTileColor.RED);
         Tile geia2 = new AmphoraTile(AmphoraTileColor.RED);
         Tile geia3 = new AmphoraTile(AmphoraTileColor.GREEN);
-        Tile geia4 = new AmphoraTile(AmphoraTileColor.YELLOW);
+        Tile geia4 = new AmphoraTile(AmphoraTileColor.GREEN);
         Tile geia5 = new AmphoraTile(AmphoraTileColor.PURPLE);
         Tile geia6 = new AmphoraTile(AmphoraTileColor.BLUE);
         Tile geia7 = new AmphoraTile(AmphoraTileColor.BROWN);

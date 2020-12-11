@@ -52,6 +52,12 @@ public class Controller{
      */
     public String gameWinner(){
         if(gameFinished()){
+            P1.playersPoints();
+            P2.playersPoints();
+            P3.playersPoints();
+            P4.playersPoints();
+            assignCaryatidPoints();
+            assignSphinxPoints();
             int max = P1.getPoints();
             String str = "";
             if (P2.getPoints() > max) max = P2.getPoints();

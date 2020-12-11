@@ -9,6 +9,10 @@ public class StatueTile extends FindingTile{
     public StatueTile(String StatueType){
         super(TileType.STATUE);
         setStatueType(StatueType);
+        if(StatueType.equals("Caryatid"))
+            setImage("src\\resources\\caryatid.png");
+        else
+            setImage("src\\resources\\sphinx.png");
     }
 
     /**

@@ -12,7 +12,7 @@ public class Player{
     private PlayerColor color;
     private String name;
     private Bag playersTiles;
-    private CharacterBundle characterBundle;
+    private CharacterBundle characterBundle = new CharacterBundle();
     private boolean hasTurn, finished;
     private int points;
     private int caryatid = 0;
@@ -26,7 +26,6 @@ public class Player{
         this.color = color;
         this.name = name;
         this.playersTiles = new Bag();
-        characterBundle = new CharacterBundle();
         this.hasTurn = false;
         this.finished = false;
         this.points = 0;
@@ -37,26 +36,26 @@ public class Player{
      * <b>Postcondition:</b> the player's mosaic points have been returned.
      * @return int p
      */
-    public int getMosaicPoints(){    //done
-        int[] mos = {0, 0, 0};
-        int p = 0;
+    public int getMosaicPoints(){       //done
+        int[] mosaics = {0, 0, 0};
+        int points = 0;
         for(int i = 0; i < playersTiles.getSize(); i++) {
             if (playersTiles.getTile(i).getType() == TileType.MOSAIC) {
                 if (playersTiles.getTile(i).getMosaicColor() == MosaicTileColor.GREEN) {
-                    mos[0]++;
+                    mosaics[0]++;
                 } else if (playersTiles.getTile(i).getMosaicColor() == MosaicTileColor.RED) {
-                    mos[1]++;
+                    mosaics[1]++;
                 } else if (playersTiles.getTile(i).getMosaicColor() == MosaicTileColor.YELLOW) {
-                    mos[2]++;
+                    mosaics[2]++;
                 }
             }
         }
         for(int i = 0; i < 3; i++){
-            p += 4*(mos[i]/4);
-            mos[i] = mos[i]%4;
+            points += 4*(mosaics[i]/4);
+            mosaics[i] = mosaics[i]%4;
         }
-        p += 2*((mos[0] + mos[1] + mos[2])/4);
-        return p;
+        points += 2*((mosaics[0] + mosaics[1] + mosaics[2])/4);
+        return points;
     }
 
     /**
@@ -65,53 +64,54 @@ public class Player{
      * @return int p
      */
     public int getSkeletonPoints(){     //done
-        int skelAU = 0, skelAL = 0, skelKU = 0, skelKL = 0, skelA, skelK, p = 0;
+        int sumOfSkeletonsAdultUpper = 0, sumOfSkeletonsAdultLower = 0, sumOfSkeletonsKidUpper = 0, sumOfSkeletonsKidLower = 0;
+        int sumOfSkeletonsAdult, sumOfSkeletonsKid, points = 0;
         for(int i = 0; i < playersTiles.getSize(); i++){
             if(playersTiles.getTile(i).getType() == TileType.SKELETON){
                 if(playersTiles.getTile(i).getAge().equals("Adult")){
                     if(playersTiles.getTile(i).getHalf().equals("Upper")){
-                        skelAU++;
-                    }else skelAL++;
+                        sumOfSkeletonsAdultUpper++;
+                    }else sumOfSkeletonsAdultLower++;
                 }else{
                     if(playersTiles.getTile(i).getHalf().equals("Upper")){
-                        skelKU++;
-                    }else skelKL++;
+                        sumOfSkeletonsKidUpper++;
+                    }else sumOfSkeletonsKidLower++;
                 }
             }
         }
-        if(skelAU==skelAL){
-            skelA = skelAU;
+        if(sumOfSkeletonsAdultUpper==sumOfSkeletonsAdultLower){
+            sumOfSkeletonsAdult = sumOfSkeletonsAdultUpper;
         }else{
-            int min = skelAL;
-            if(skelAU < min){ min = skelAU; }
-            skelA = min%(skelAL+skelAU-min);
+            int min = sumOfSkeletonsAdultLower;
+            if(sumOfSkeletonsAdultUpper < min){ min = sumOfSkeletonsAdultUpper; }
+            sumOfSkeletonsAdult = min%(sumOfSkeletonsAdultLower+sumOfSkeletonsAdultUpper-min);
         }
-        if(skelKU == skelKL){
-            skelK = skelKU;
+        if(sumOfSkeletonsKidUpper == sumOfSkeletonsKidLower){
+            sumOfSkeletonsKid = sumOfSkeletonsKidUpper;
         }else{
-            int min = skelKL;
-            if(skelKU < min){ min = skelKU; }
-            skelK = min%(skelKL+skelKU-min);
+            int min = sumOfSkeletonsKidLower;
+            if(sumOfSkeletonsKidUpper < min){ min = sumOfSkeletonsKidUpper; }
+            sumOfSkeletonsKid = min%(sumOfSkeletonsKidLower+sumOfSkeletonsKidUpper-min);
         }
-        while(skelA!=0 || skelK!=0){
-            if(skelA<2 || skelK==0){
-                p += skelA + skelK;
-                skelA = 0;
-                skelK = 0;
+        while(sumOfSkeletonsAdult!=0 || sumOfSkeletonsKid!=0){
+            if(sumOfSkeletonsAdult<2 || sumOfSkeletonsKid==0){
+                points += sumOfSkeletonsAdult + sumOfSkeletonsKid;
+                sumOfSkeletonsAdult = 0;
+                sumOfSkeletonsKid = 0;
             }else{
-                p += 6;
-                skelA -= 2;
-                skelK -= 1;
+                points += 6;
+                sumOfSkeletonsAdult -= 2;
+                sumOfSkeletonsKid -= 1;
             }
         }
-        return p;
+        return points;
     }
 
     /**
      * <b>Accessor:</b> initializes the number of caryatid tiles the player has.
      * <b>Postcondition:</b> the number of the player's caryatid tiles has been initialized
      */
-    public void initCaryatid(){      //done
+    public void initCaryatid(){          //done
         for(int i = 0; i < playersTiles.getSize(); i++){
             if(playersTiles.getTile(i).getType() == TileType.STATUE){
                 if(playersTiles.getTile(i).getStatueType().equals("Caryatid")){
@@ -125,7 +125,7 @@ public class Player{
      * <b>Accessor:</b> initializes the number of sphinx tiles the player has.
      * <b>Postcondition:</b> the number of the player's sphinx tiles has been initialized
      */
-    public void initSphinx(){       //done
+    public void initSphinx(){           //done
         for(int i = 0; i < playersTiles.getSize(); i++){
             if(playersTiles.getTile(i).getType() == TileType.STATUE){
                 if(playersTiles.getTile(i).getStatueType().equals("Sphinx")){
@@ -140,15 +140,17 @@ public class Player{
      * <b>Postcondition:</b> the player's amphora points have been returned.
      * @return int p
      */
-    public int getAmphoraPoints(){
-        int blue = 0, brown = 0, red = 0, green = 0, yellow = 0, purple = 0, amphoraPoints = 0, m = 6, sum = 0;
-        for(int i = 0; i < playersTiles.getSize(); i++) {
-            if(playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.BLUE) blue++;
-            else if(playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.BROWN) brown++;
-            else if(playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.RED) red++;
-            else if(playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.GREEN) green++;
-            else if(playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.YELLOW) yellow++;
-            else if(playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.PURPLE) purple++;
+    public int getAmphoraPoints(){      //done
+        int blue = 0, brown = 0, red = 0, green = 0, yellow = 0, purple = 0, amphoraPoints = 0, m = 6, num = 0;
+        for(int i = 0; i < playersTiles.getSize(); i++){
+            if(playersTiles.getTile(i).getType() == TileType.AMPHORA) {
+                if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.BLUE) blue++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.BROWN) brown++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.RED) red++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.GREEN) green++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.YELLOW) yellow++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.PURPLE) purple++;
+            }
         }
 
         ArrayList<Integer> counter = new ArrayList<>();
@@ -159,50 +161,43 @@ public class Player{
         counter.add(yellow);
         counter.add(purple);
         Collections.sort(counter);
-        System.out.println(counter);
         for(int i = 0; i < counter.size(); i++){
-            if(counter.get(i) == 0) sum++;
+            if(counter.get(i) == 0) num++;
         }
-        /*
-        for(int j = 0; j < 4; j++){
-            if(sum == j){
-                amphoraPoints += 6*counter.get(j);
-                for(int i = j; i < counter.size(); i++){
-                    counter.set(i, counter.get(i) - 1);
+        while(counter.get(3) != 0){
+            if(num == 0){
+                amphoraPoints += 6*counter.get(0);
+                for(int i = counter.size() - 1; i >= 0; i--){
+                    counter.set(i, counter.get(i) - counter.get(0));
+                }
+            }else if(num == 1){
+                amphoraPoints += 4*counter.get(1);
+                for(int i = counter.size() - 1; i >= 1; i--){
+                    counter.set(i, counter.get(i) - counter.get(1));
+                }
+            }else if(num == 2){
+                amphoraPoints += 2*counter.get(2);
+                for(int i = counter.size() - 1; i >= 2; i--){
+                    counter.set(i, counter.get(i) - counter.get(2));
+                }
+            }else if(num == 3){
+                amphoraPoints += counter.get(3);
+                for(int i = counter.size() - 1; i >= 3 ; i--){
+                    counter.set(i, counter.get(i) - counter.get(3));
                 }
             }
-        }
-        */
-
-        if(sum == 0){
-            amphoraPoints += 6*counter.get(0);
+            num = 0;
             for(int i = 0; i < counter.size(); i++){
-                counter.set(i, counter.get(i) - 1);
-            }
-        }else if(sum == 1){
-            amphoraPoints += 4*counter.get(1);
-            for(int i = 1; i < counter.size(); i++){
-                counter.set(i, counter.get(i) - 1);
-            }
-        }else if(sum == 2){
-            amphoraPoints += 2*counter.get(2);
-            for(int i = 2; i < counter.size(); i++){
-                counter.set(i, counter.get(i) - 1);
-            }
-        }else if(sum == 3){
-            amphoraPoints += counter.get(3);
-            for(int i = 3; i < counter.size(); i++){
-                counter.set(i, counter.get(i) - 1);
+                if(counter.get(i) == 0) num++;
+
             }
         }
-        System.out.println(counter);
-        System.out.println(amphoraPoints);
         return amphoraPoints;
     }
 
     /**
-     * <b>Transformer:</b> sets the player's points.
-     * <b>Postcondition</b> the player's points have been set;
+     * <b>Transformer:</b> sets the player's points using the methods above
+     * <b>Postcondition</b> the player's points have been set
      */
     public void playersPoints(){
         points = getAmphoraPoints() + getMosaicPoints() + getSkeletonPoints();

@@ -19,6 +19,9 @@ public class GUI extends JFrame{
     private Controller game = new Controller();
     private JButton DrawTiles, EndTurn;
     private JButton archaeologist, assistant, digger, professor;
+    //private JButton archaeologistP2, assistantP2, diggerP2, professorP2;
+    //private JButton archaeologistP3, assistantP3, diggerP3, professorP3;
+    //private JButton archaeologistP4, assistantP4, diggerP4, professorP4;
     private JDesktopPane playersTilesField;
     private JLayeredPane boardGraphics;
     private URL imageURL;
@@ -38,6 +41,7 @@ public class GUI extends JFrame{
         assistant = new JButton();
         digger = new JButton();
         professor = new JButton();
+
         DrawTiles = new JButton("Draw Tiles");
         EndTurn = new JButton("End Turn");
 
@@ -66,7 +70,6 @@ public class GUI extends JFrame{
         playerPanel.setBounds(501, 0, 320, 25);
         label = new JLabel(game.getTurn().getPlayer().getName());
         playerPanel.add(label);
-
 
         CharacterListener characterListener = new CharacterListener();
         JPanel characterPanel = new JPanel();
@@ -112,62 +115,10 @@ public class GUI extends JFrame{
         add(drawEndPanel);
         add(playersTilesField);
 
-        //archaeologist.setIcon(new ImageIcon("src\\resources\\archaeologist.png"));
-        //DrawListener me = new DrawListener();
-        //archaeologist.addActionListener(me);
-        //jp.add(archaeologist);
-        //add(jp);
-
-
         validate();
-
-        /*
-        JButton b1 = new JButton("On");
-        JButton b2 = new JButton("Off");
-
-        DrawListener poios = new DrawListener();
-        b1.addActionListener(poios);
-        b2.addActionListener(poios);
-
-        b1.setOpaque(true);
-        b1.setBackground(Color.red);
-        b1.setBounds(0, 0, 100, 100);
-
-        b2.setOpaque(true);
-        b2.setBackground(Color.blue);
-        b2.setBounds(200, 200, 100, 100);
-
-
-
-        JPanel panel = new JPanel();
-        panel.setBounds(0, 0, 500, 500);
-        panel.setBackground(Color.YELLOW);
-        panel.add(b1);
-        panel.add(b2);
-
-
-        JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setBounds(0, 0, 500, 500);
-        layeredPane.setBackground(Color.YELLOW);
-        layeredPane.add(b1);
-        layeredPane.add(b2);
-
-
-
-        JFrame frame = new JFrame("JLayeredPane");
-        frame.add(panel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(new Dimension(500, 500));
-        frame.setLayout(null);
-        frame.setVisible(true);
-        */
-
     }
 
-
     public JButton getDrawTiles(){ return DrawTiles; }
-
-    public JButton getArchaeologist(){ return archaeologist; }
 
     /**
      * <b>Transformer:</b> initializes some buttons and labels.
@@ -195,14 +146,20 @@ public class GUI extends JFrame{
     }
 
     /**
+     * <b>Accessor:</b> returns the controller field named game from the GUI class to be used by the ActionListener classes
+     * <b>Postcondition:</b> the controller field named game has been returned
+     * @return Controller game
+     */
+    public Controller getGame(){ return game; }
+
+    /**
      * a class to listen to the draw button
      */
     private class DrawListener implements ActionListener {
 
         /**
-         * <b>Transformer:</b> doing some action when the Draw button is pushed
+         * <b>Transformer:</b> doing some action when the Draw Tiles button or the End Turn button is pushed
          * <b>Postcondition:</b> the action is done
-         *
          * @param e
          */
         @Override
@@ -216,14 +173,10 @@ public class GUI extends JFrame{
             }else if (e.getSource() == EndTurn){
                 game.getTurn().endTurn(game.getP1(), game.getP2(), game.getP3(), game.getP4());
                 label.setText(game.getTurn().getPlayer().getName());
-                if(game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(0).getIsUsed())
-                    archaeologist.setVisible(false);
-                if(game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(1).getIsUsed())
-                    assistant.setVisible(false);
-                if(game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(2).getIsUsed())
-                    digger.setVisible(false);
-                if(game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(3).getIsUsed())
-                    professor.setVisible(false);
+                archaeologist.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(0).getIsUsed());
+                assistant.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(1).getIsUsed());
+                digger.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(2).getIsUsed());
+                professor.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(3).getIsUsed());
                 System.out.println(game.getTurn().getPlayer());
             }
         }

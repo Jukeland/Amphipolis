@@ -2,12 +2,14 @@ package Model.Tiles;
 
 public class LandslideTile implements Tile{
     private TileType type;
+    private String image;
 
     /**Constructor.
      * <b>Postcondition:</b> creates a new LandSlide tile.
      */
     public LandslideTile(){
         type = TileType.LANDSLIDE;
+        image = "src\\resources\\landslide.png";
     }
 
     /**
@@ -73,4 +75,12 @@ public class LandslideTile implements Tile{
      */
     @Override
     public String getHalf(){ return null; }
+
+    /**
+     * <b>Accessor:</b> returns the path of the image of the tile as a string
+     * <b>Postcondition:</b> the path of the image has been returned
+     * @return the path of the image as a string
+     */
+    @Override
+    public String getImage(){ return image; }
 }

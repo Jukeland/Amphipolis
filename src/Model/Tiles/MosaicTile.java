@@ -10,6 +10,12 @@ public class MosaicTile extends FindingTile{
     public MosaicTile(MosaicTileColor col){
         super(TileType.MOSAIC);
         setColor(col);
+        if(color == MosaicTileColor.GREEN)
+            setImage("src\\resources\\mosaic_green.png");
+        else if(color == MosaicTileColor.RED)
+            setImage("src\\resource\\mosaic_red.png");
+        else
+            setImage("src\\resources\\mosaic_yellow.png");
     }
 
     /**

@@ -10,6 +10,18 @@ public class AmphoraTile extends FindingTile{
     public AmphoraTile(AmphoraTileColor col){
         super(TileType.AMPHORA);
         setColor(col);
+        if(color == AmphoraTileColor.BLUE)
+            setImage("src\\resources\\amphora_blue.png");
+        else if(color == AmphoraTileColor.BROWN)
+            setImage("src\\resources\\amphora_brown.png");
+        else if(color == AmphoraTileColor.GREEN)
+            setImage("src\\resources\\amphora_green.png");
+        else if(color == AmphoraTileColor.PURPLE)
+            setImage("src\\resources\\amphora_purple.png");
+        else if(color == AmphoraTileColor.RED)
+            setImage("src\\resources\\amphora_red.png");
+        else
+            setImage("src\\resources\\amphora_yellow.png");
     }
 
     /**

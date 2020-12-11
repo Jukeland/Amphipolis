@@ -50,4 +50,11 @@ public interface Tile{
      * @return the skeleton's half
      */
     String getHalf();
+
+    /**
+     * <b>Accessor:</b> returns the path of the image of the tile as a string
+     * <b>Postcondition:</b> the path of the image has been returned
+     * @return the path of the image as a string
+     */
+    String getImage();
 }
