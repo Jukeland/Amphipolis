@@ -13,11 +13,26 @@ public class FindingTile implements Tile{
     }
 
     /**
+     * <b>Transformer:</b> sets the image of the tile
+     * <b>Postcondition:</b> the image of the tile has been set
+     * @param image
+     */
+    public void setImage(String image){ this.image = image; }
+
+    /**
      * <b>Transformer:</b> sets the tile type.
      * <b>Postcondition:</b> the tile type has been set.
      * @param type
      */
     public void setType(TileType type){ this.type = type; }
+
+    /**
+     * <b>Accessor:</b> returns the tile type.
+     * <b>Postcondition:</b> the tile type has been returned.
+     * @return TileType type
+     */
+    @Override
+    public TileType getType() { return type; }
 
     /**
      * <b>Accessor:</b> returns the amphora color
@@ -64,26 +79,6 @@ public class FindingTile implements Tile{
      * <b>Postcondition:</b> the path of the image has been returned
      * @return the path of the image as a string
      */
-
-    /**
-     * <b>Accessor:</b> returns the path of the image of the tile as a string
-     * <b>Postcondition:</b> the path of the image has been returned
-     * @return the path of the image as a string
-     */
     @Override
     public String getImage(){ return image; }
-
-    /**
-     * <b>Transformer:</b> sets the image of the tile
-     * <b>Postcondition:</b> the image of the tile has been set
-     * @param image
-     */
-    public void setImage(String image){ this.image = image; }
-
-    /**
-     * <b>Accessor:</b> returns the tile type.
-     * <b>Postcondition:</b> the tile type has been returned.
-     * @return TileType type
-     */
-    public TileType getType() { return type; }
 }

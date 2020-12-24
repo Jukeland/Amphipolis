@@ -4,30 +4,26 @@ import Model.Characters.CharacterBundle;
 import Model.Tiles.AmphoraTileColor;
 import Model.Tiles.MosaicTileColor;
 import Model.Tiles.TileType;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class Player{
-    private PlayerColor color;
     private String name;
     private Bag playersTiles;
     private CharacterBundle characterBundle = new CharacterBundle();
-    private boolean hasTurn, finished;
+    private boolean hasUsedCharacter;
     private int points;
     private int caryatid = 0;
     private int sphinx = 0;
 
     /**Constructor.
      *<b>Postcondition:</b> creates a new Player with "color" color and "name" name.
-     * @param color
+     * @param name
      */
-    public Player(PlayerColor color, String name){
-        this.color = color;
+    public Player(String name){
         this.name = name;
         this.playersTiles = new Bag();
-        this.hasTurn = false;
-        this.finished = false;
+        this.hasUsedCharacter = false;
         this.points = 0;
     }
 
@@ -108,6 +104,66 @@ public class Player{
     }
 
     /**
+     * <b>Accessor:</b> returns the player's points from the amphora tiles.
+     * <b>Postcondition:</b> the player's amphora points have been returned.
+     * @return int p
+     */
+    public int getAmphoraPoints(){      //done
+        int blue = 0, brown = 0, red = 0, green = 0, yellow = 0, purple = 0, amphoraPoints = 0, num = 0;
+        for(int i = 0; i < playersTiles.getSize(); i++){
+            if(playersTiles.getTile(i).getType() == TileType.AMPHORA) {
+                if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.BLUE) blue++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.BROWN) brown++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.RED) red++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.GREEN) green++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.YELLOW) yellow++;
+                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.PURPLE) purple++;
+            }
+        }
+
+        ArrayList<Integer> counter = new ArrayList<>();
+        counter.add(blue);
+        counter.add(brown);
+        counter.add(red);
+        counter.add(green);
+        counter.add(yellow);
+        counter.add(purple);
+        Collections.sort(counter);
+        for (Integer value : counter) {
+            if (value == 0) num++;
+        }
+        while(counter.get(3) != 0){
+            if(num == 0){
+                amphoraPoints += 6*counter.get(0);
+                for(int i = counter.size() - 1; i >= 0; i--){
+                    counter.set(i, counter.get(i) - counter.get(0));
+                }
+            }else if(num == 1){
+                amphoraPoints += 4*counter.get(1);
+                for(int i = counter.size() - 1; i >= 1; i--){
+                    counter.set(i, counter.get(i) - counter.get(1));
+                }
+            }else if(num == 2){
+                amphoraPoints += 2*counter.get(2);
+                for(int i = counter.size() - 1; i >= 2; i--){
+                    counter.set(i, counter.get(i) - counter.get(2));
+                }
+            }else if(num == 3){
+                amphoraPoints += counter.get(3);
+                for(int i = counter.size() - 1; i >= 3 ; i--){
+                    counter.set(i, counter.get(i) - counter.get(3));
+                }
+            }
+            num = 0;
+            for (Integer integer : counter) {
+                if (integer == 0) num++;
+
+            }
+        }
+        return amphoraPoints;
+    }
+
+    /**
      * <b>Accessor:</b> initializes the number of caryatid tiles the player has.
      * <b>Postcondition:</b> the number of the player's caryatid tiles has been initialized
      */
@@ -136,66 +192,6 @@ public class Player{
     }
 
     /**
-     * <b>Accessor:</b> returns the player's points from the amphora tiles.
-     * <b>Postcondition:</b> the player's amphora points have been returned.
-     * @return int p
-     */
-    public int getAmphoraPoints(){      //done
-        int blue = 0, brown = 0, red = 0, green = 0, yellow = 0, purple = 0, amphoraPoints = 0, m = 6, num = 0;
-        for(int i = 0; i < playersTiles.getSize(); i++){
-            if(playersTiles.getTile(i).getType() == TileType.AMPHORA) {
-                if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.BLUE) blue++;
-                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.BROWN) brown++;
-                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.RED) red++;
-                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.GREEN) green++;
-                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.YELLOW) yellow++;
-                else if (playersTiles.getTile(i).getAmphoraColor() == AmphoraTileColor.PURPLE) purple++;
-            }
-        }
-
-        ArrayList<Integer> counter = new ArrayList<>();
-        counter.add(blue);
-        counter.add(brown);
-        counter.add(red);
-        counter.add(green);
-        counter.add(yellow);
-        counter.add(purple);
-        Collections.sort(counter);
-        for(int i = 0; i < counter.size(); i++){
-            if(counter.get(i) == 0) num++;
-        }
-        while(counter.get(3) != 0){
-            if(num == 0){
-                amphoraPoints += 6*counter.get(0);
-                for(int i = counter.size() - 1; i >= 0; i--){
-                    counter.set(i, counter.get(i) - counter.get(0));
-                }
-            }else if(num == 1){
-                amphoraPoints += 4*counter.get(1);
-                for(int i = counter.size() - 1; i >= 1; i--){
-                    counter.set(i, counter.get(i) - counter.get(1));
-                }
-            }else if(num == 2){
-                amphoraPoints += 2*counter.get(2);
-                for(int i = counter.size() - 1; i >= 2; i--){
-                    counter.set(i, counter.get(i) - counter.get(2));
-                }
-            }else if(num == 3){
-                amphoraPoints += counter.get(3);
-                for(int i = counter.size() - 1; i >= 3 ; i--){
-                    counter.set(i, counter.get(i) - counter.get(3));
-                }
-            }
-            num = 0;
-            for(int i = 0; i < counter.size(); i++){
-                if(counter.get(i) == 0) num++;
-
-            }
-        }
-        return amphoraPoints;
-    }
-
-    /**
      * <b>Transformer:</b> sets the player's points using the methods above
      * <b>Postcondition</b> the player's points have been set
      */
@@ -209,8 +205,7 @@ public class Player{
      */
     public void initPlayer(){
         characterBundle.init_characters();
-        this.finished = false;
-        this.hasTurn = false;
+        this.hasUsedCharacter = false;
         this.playersTiles.clearAll();
         this.points = 0;
     }
@@ -243,26 +238,7 @@ public class Player{
      */
     public int getPoints(){ return points; }
 
-    /**
-     * <b>Transformer:</b> sets the player's color.
-     * <b>Postcondition:</b> the player's color has been set.
-     * @param color
-     */
-    public void setColor(PlayerColor color){ this.color = color; }
-
-    /**
-     * <b>Accessor:</b> returns the player's color.
-     * <b>Postcondition:</b> the player's color has been returned.
-     * @return PlayerColor color.
-     */
-    public PlayerColor getColor(){ return color; }
-
-    /**
-     * <b>Transformer:</b> sets the player's name.
-     * <b>Postcondition:</b> the player's name has been set.
-     * @param name
-     */
-    public void setName(String name){ this.name = name; }
+    //there is no need for a method to set the player's name
 
     /**
      * <b>Accessor:</b> returns the player's name.
@@ -271,12 +247,7 @@ public class Player{
      */
     public String getName(){ return name; }
 
-    /**
-     * <b>Transformer:</b> sets the player's tiles.
-     * <b>Postcondition:</b> the player's tiles has been returned.
-     * @param playersTiles
-     */
-    public void setPlayersTiles(Bag playersTiles){ this.playersTiles = playersTiles; }
+    //there is no need for a method to set the player's tiles
 
     /**
      * <b>Accessor:</b> returns the player's tiles.
@@ -285,12 +256,7 @@ public class Player{
      */
     public Bag getPlayersTiles(){ return playersTiles; }
 
-    /**
-     * <b>Transformer:</b> sets the player's characters.
-     * <b>Postcondition:</b> the player's characters has been set.
-     * @param characterBundle
-     */
-    public void setCharacterBundle(CharacterBundle characterBundle){ this.characterBundle = characterBundle; }
+    //there is no need for a method to set the character bundle
 
     /**
      * <b>Accessor:</b> returns the player's characters.
@@ -300,32 +266,18 @@ public class Player{
     public CharacterBundle getCharacterBundle(){ return characterBundle; }
 
     /**
-     * <b>Transformer:</b> sets if the player has played.
-     * <b>Postcondition:</b> if the player has played has been set.
-     * @param hasTurn
+     * <b>Transformer:</b> sets if the player has used a character this turn or not
+     * <b>Postcondition:</b> if the player has used a character this turn or not has been set
+     * @param bool
      */
-    public void setHasTurn(boolean hasTurn){ this.hasTurn = hasTurn; }
+    public void setHasUsedCharacter(boolean bool){ hasUsedCharacter = bool; }
 
     /**
-     * <b>Accessor:</b> returns if the player has played.
-     * <b>Postcondition:</b> the player's color has been returned.
-     * @return boolean hasPlayed.
+     * <b>Accessor:</b> returns true if the player has used a character this turn or false otherwise
+     * <b>Postcondition:</b> if the player has used a character this turn has been returned
+     * @return boolean hasUsedCharacter
      */
-    public boolean getHasTurn(){ return hasTurn; }
-
-    /**
-     * <b>Transformer:</b> sets if the player is finished.
-     * <b>Postcondition:</b> if the player is finished has been set.
-     * @param finished
-     */
-    public void setFinished(boolean finished){ this.finished = finished; }
-
-    /**
-     * <b>Accessor:</b> returns if the players has finished or not
-     * <b>Postcondition:</b> if the player has finished has been returned
-     * @return boolean finished.
-     */
-    public boolean getFinished(){ return finished; }
+    public boolean getHasUsedCharacter(){ return hasUsedCharacter; }
 
     /**
      * Returns the string representation of the player
@@ -333,5 +285,5 @@ public class Player{
      * @return the string representation of the player
      */
     @Override
-    public String toString(){ return "Name: " + name + ", Color: " + color + ", Characters: " + characterBundle.toString() + ", Tiles: " + playersTiles.toString() + ", Points: " + points; }
+    public String toString(){ return "Name: " + name +  ", Characters: " + characterBundle.toString() + ", Tiles: " + playersTiles.toString() + ", Points: " + points; }
 }

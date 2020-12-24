@@ -1,7 +1,5 @@
 package Model.Characters;
 
-import Model.Game.Player;
-
 public class Digger extends Character {
 
     /**
@@ -12,7 +10,6 @@ public class Digger extends Character {
     public Digger(boolean isUsed) {
         super(isUsed);
     }
-
 
     /**
      * returns the string representation of the character

@@ -20,13 +20,9 @@ public class LandslideTile implements Tile{
     @Override
     public String toString(){ return "Landslide"; }
 
-    /**
-     * <b>Transformer:</b> sets the tile type.
-     * <b>Postcondition:</b> the tile type has been set.
-     * @param type
-     */
+    //there is no need to set the image because it's not gonna change
 
-    public void setType(TileType type){ this.type = type; }
+    //there is no need to set the type because it's not gonna change
 
     /**
      * <b>Accessor:</b> returns the type of the tile

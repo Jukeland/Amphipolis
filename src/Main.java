@@ -1,26 +1,19 @@
+import View.GUI;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class Main extends JFrame{
-    JPanel jp = new JPanel();
-    JButton jb = new JButton();
-/*
-    public Main(){
-        setTitle("Poios");
-        setVisible(true);
-        setSize(400, 200);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        jb.setSize(100,100);
-        jb.setIcon(new ImageIcon("src\\resources\\tile_back.png"));
-        jp.add(jb);
-        add(jp);
-
-        validate();
-    }
-
+public class Main{
     public static void main(String[] args){
-        Main m = new Main();
-    }
 
- */
+        Object[] options = {"One Player", "Four Players", "Cancel"};
+        int n = JOptionPane.showOptionDialog(null,
+                "How many players would you like to play with?",
+                "Choose Players",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, options, options[2]);
+        GUI g = new GUI();
+
+    }
 }

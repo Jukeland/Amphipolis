@@ -1,7 +1,5 @@
 package Model.Characters;
 
-import Model.Game.Player;
-
 public class Professor extends Character {
 
     /**

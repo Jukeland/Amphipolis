@@ -59,13 +59,6 @@ public class Board{
     }
 
     /**
-     * <b>Transformer:</b> removes a given tile from its area
-     * <b>Postcondition:</b> the tile has been removed from its area
-     * @param e
-     */
-    public void removeTileFromArea(Tile e){  }
-
-    /**
      * <b>Accessor:</b> returns the tiles in the amphora area
      * <b>Postcondition:</b> the tiles in the amphora area have been returned
      * @return Bag AmphoraArea

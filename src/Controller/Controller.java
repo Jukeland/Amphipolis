@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class Controller{
     private Player P1, P2, P3, P4;
-    private ArrayList<Player> players = new ArrayList<>();
     private Bag bag = new Bag();
     private Turn turn;
     private Board board = new Board();
@@ -17,18 +16,14 @@ public class Controller{
      * <b>Postcondition:</b> a new instance of Controller had been created and all initializations have been done
      */
     public Controller(){
-        P1 = new Player(PlayerColor.BLACK, "Player1");
+        P1 = new Player("Player1");
         P1.initPlayer();
-        P2 = new Player(PlayerColor.BLUE, "Player2");
+        P2 = new Player("Player2");
         P2.initPlayer();
-        P3 = new Player(PlayerColor.RED, "Player3");
+        P3 = new Player("Player3");
         P3.initPlayer();
-        P4 = new Player(PlayerColor.YELLOW, "Player4");
+        P4 = new Player("Player4");
         P4.initPlayer();
-        players.add(P1);
-        players.add(P2);
-        players.add(P3);
-        players.add(P4);
         bag.init_tiles();
         turn = new Turn(P1, P2, P3, P4);
         board.init_board();
@@ -41,7 +36,7 @@ public class Controller{
      */
     public boolean gameFinished(){
         boolean isFinished = false;
-        if(board.getLandslideArea().getSize() == 16) isFinished = true;
+        if(board.getLandslideArea().getSize() >= 16) isFinished = true;
         return isFinished;
     }
 
@@ -67,7 +62,7 @@ public class Controller{
             if (max == P2.getPoints()) str += "Player 2, ";
             if (max == P3.getPoints()) str += "Player 3, ";
             if (max == P4.getPoints()) str += "Player 4, ";
-            return "The winner(s) is/are " + str + "and their points were " + max;
+            return "The winner(s) is/are " + str + "with " + max + " points. All four players' points: Player1 - " + P1.getPoints() + ", Player2 - " + P2.getPoints() + ", Player3 - " + P3.getPoints() + ", Player4 - " + P4.getPoints();
         }else return "Game has not finished yet";
     }
 
@@ -85,26 +80,14 @@ public class Controller{
     }
 
     /**
-     * <b>Transformer:</b> draw some tiles from the board following the rules of the game
-     * <b>Postcondition:</b> the tiles have been drawn
-     */
-    public void drawTilesFromBoard(Board board){
-
-    }
-
-    /**
-     * <b>Transformer:</b> use a character's move and set that character's isUsed to true
-     * <b>Postcondition:</b> the character's move has been used and it's isUsed has been set to true
-     */
-    public void useCharacter(CharacterBundle bundle){
-
-    }
-
-    /**
      * <b>Transformer:</b> computes and assigns the points earned from caryatids by each player
      * <b>Postcondition:</b> the points have been updated
      */
     public void assignCaryatidPoints(){
+        P1.initCaryatid();
+        P2.initCaryatid();
+        P3.initCaryatid();
+        P4.initCaryatid();
         if(P1.getCaryatid() != 0 || P2.getCaryatid() != 0 || P3.getCaryatid() != 0 || P4.getCaryatid() != 0){
             int max = P1.getCaryatid();
             if (P2.getCaryatid() > max) max = P2.getCaryatid();
@@ -133,6 +116,10 @@ public class Controller{
      * <b>Postcondition:</b> the points have been updates
      */
     public void assignSphinxPoints(){
+        P1.initSphinx();
+        P2.initSphinx();
+        P3.initSphinx();
+        P4.initSphinx();
         if(P1.getSphinx() != 0 || P2.getSphinx() != 0 || P3.getSphinx() != 0 || P4.getSphinx() != 0){
             int max = P1.getSphinx();
             if (P2.getSphinx() > max) max = P2.getSphinx();

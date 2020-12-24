@@ -11,7 +11,6 @@ public class Archaeologist extends Character {
         super(isUsed);
     }
 
-
     /**
      * returns the string representation of the character
      * <b>Postcondition:</b> the string representation of the character has been returned
