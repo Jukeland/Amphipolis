@@ -2,30 +2,37 @@ package View;
 
 import Controller.Controller;
 import Model.Game.Bag;
+import Model.Tiles.TileType;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class GUI extends JFrame{
-    private Controller game = new Controller();
+    private Controller game;
     private JButton DrawTiles, EndTurn;
     private JButton archaeologist, assistant, digger, professor;
     private JPanel playersTilesField;
     private JPanel amphoraArea, mosaicArea, skeletonArea, statueArea, landslideArea;
     private JLayeredPane boardGraphics;
     private ArrayList<JButton> amphoraButtons, mosaicButtons, skeletonButtons, statueButtons;
-    private String previousChoice = "Nothing";
-    private int numOfTilesTaken = 0, maxNumOfTilesToTake = 2;
     private JLabel playerName;
-    private ArrayList<JLabel> playersTiles = new ArrayList<>();
+    private String previousChoice = "Nothing", nextChoice = "Nothing";
+    private int numOfTilesTaken = 0, maxNumOfTilesToTake = 2, numOfDraw = 0, numOfPlayers;
+    private boolean drewLandslideTile = false;
+
 
     /**
      * <b>Constructor:</b> Creates a new Window and initializes some buttons and panels <br />
      * <b>Postcondition:</b> Creates a new Window and initializes some buttons and panels
      * starting a new game.
      */
-    public GUI(){
+    public GUI(int numOfPlayers){
+        if(numOfPlayers == 0)
+            System.exit(-1);
+        this.numOfPlayers = numOfPlayers;
+        game = new Controller(numOfPlayers);
         archaeologist = new JButton();
         assistant = new JButton();
         digger = new JButton();
@@ -43,11 +50,13 @@ public class GUI extends JFrame{
         skeletonButtons = new ArrayList<>();
         statueButtons = new ArrayList<>();
         setUpGUI();
+        displayTiles();
     }
 
     /**
-     * <b>Transformer:</b> initializes some buttons and labels.
-     * <b>Postcondition:</b> the buttons and labels have been initialized.
+     * <b>Transformer:</b> initializes the board graphics, the character buttons, the name of the current player, the DrawTiles,
+     *                          EndTurn buttons and the playerInventory panel
+     * <b>Postcondition:</b> the buttons, labels and panels have been initiated
      */
     public void setUpGUI(){
 
@@ -96,9 +105,9 @@ public class GUI extends JFrame{
 
         JPanel drawEndPanel = new JPanel();
         drawEndPanel.setBounds(650, 500, 320, 150);
-        DrawListener drawListener = new DrawListener();
-        DrawTiles.addActionListener(drawListener);
-        EndTurn.addActionListener(drawListener);
+        DrawEndListener drawEndListener = new DrawEndListener();
+        DrawTiles.addActionListener(drawEndListener);
+        EndTurn.addActionListener(drawEndListener);
         drawEndPanel.add(DrawTiles);
         drawEndPanel.add(EndTurn);
 
@@ -123,11 +132,8 @@ public class GUI extends JFrame{
     }
 
     /**
-     * Bag is a custom class which is basically an array list of tiles. tiles are created through other custom classes
-     * b.getTile(i) returns the tile in the i position
-     * getIsDisplayed() is a method that returns true if the current tile is being already displayed or false if not
-     * playersTilesField is an array list with the tiles that are in the player's inventory
-     * getImage() returns a String of the tile's image path (e.x "src\\resources\\landslide"
+     * <b>Transformer:</b> displays the player's tiles as labels in the playerTilesField panel
+     * <b>Postcondition:</b> the player's tiles have been displayed
      * @param b
      */
     public void displayInventory(Bag b){
@@ -140,8 +146,8 @@ public class GUI extends JFrame{
     }
 
     /**
-     * <b>Transformer:</b> initializes some buttons and labels for a new game.
-     * <b>Postcondition:</b> the buttons and labels have been initialized.
+     * <b>Transformer:</b> displays all the tiles from the designated areas of the board as buttons or labels if the tiles is landslide
+     * <b>Postcondition:</b> the tiles have been displayed
      */
     public void displayTiles(){
         amphoraArea.removeAll();
@@ -191,9 +197,9 @@ public class GUI extends JFrame{
     }
 
     /**
-     * a class to listen to the draw button
+     * a class to listen to the draw tiles button and the end turn button
      */
-    private class DrawListener implements ActionListener {
+    private class DrawEndListener implements ActionListener {
 
         /**
          * <b>Transformer:</b> -> when the DrawTiles button is pressed and if the game has not finished, the last 4 tiles
@@ -201,31 +207,116 @@ public class GUI extends JFrame{
          *
          *                     -> when the EndTurn button is pressed and if the game has not finished, the player changes
          *                          to the next one and the player's inventory and all of the characters change with them
+         *
+         *                     -> if the game has finished a window pops up and informs the user about the game winner
+         *                          and the points of the players
          * <b>Postcondition:</b>
          * @param e
          */
         @Override
         public void actionPerformed(ActionEvent e) {
             if(e.getSource() == DrawTiles){
-                if(!game.gameFinished()){
-                    game.drawTilesFromBag(game.getBag(), game.getTurn().getPlayer().getPlayersTiles());
-                    game.getBoard().addToAreas(game.getTurn().getPlayer().getPlayersTiles());
-                    displayTiles();
-                }else JOptionPane.showMessageDialog(null, game.gameWinner());
+                if(numOfPlayers == 4){
+                    if(!game.gameFinished() && numOfDraw == 0){
+                        numOfDraw++;
+                        game.drawTilesFromBag(game.getBag(), game.getTurn().getPlayer().getPlayersTiles());
+                        game.getBoard().addToAreas(game.getTurn().getPlayer().getPlayersTiles());
+                        displayTiles();
+                    }else if(game.gameFinished()){
+                        JOptionPane.showMessageDialog(null, game.gameWinner());
+                        game.newGame();
+                        displayTiles();
+                        displayInventory(game.getTurn().getPlayer().getPlayersTiles());
+                        archaeologist.setVisible(true);
+                        assistant.setVisible(true);
+                        digger.setVisible(true);
+                        professor.setVisible(true);
+                    }
+                }else{
+                    if(!game.gameFinished() && numOfDraw == 0){
+                        numOfDraw++;
+                        game.drawTilesFromBag(game.getBag(), game.getTurn().getPlayer().getPlayersTiles());
+                        for(int i = game.getP1().getPlayersTiles().getSize() - 4; i < game.getP1().getPlayersTiles().getSize(); i++){
+                            if(game.getP1().getPlayersTiles().getTile(i).getType() == TileType.LANDSLIDE)
+                                drewLandslideTile = true;
+                        }
+                        game.getBoard().addToAreas(game.getTurn().getPlayer().getPlayersTiles());
+                        displayTiles();
+                    }else{
+                        JOptionPane.showMessageDialog(null, game.gameWinner());
+                        game.newGame();
+                        displayTiles();
+                        displayInventory(game.getTurn().getPlayer().getPlayersTiles());
+                        archaeologist.setVisible(true);
+                        assistant.setVisible(true);
+                        digger.setVisible(true);
+                        professor.setVisible(true);
+                    }
+                }
             }else if(e.getSource() == EndTurn){
-                if(!game.gameFinished()){
-                    previousChoice = "Nothing";
-                    game.getTurn().getPlayer().setHasUsedCharacter(false);
-                    numOfTilesTaken = 0;
-                    maxNumOfTilesToTake = 2;
-                    game.getTurn().endTurn(game.getP1(), game.getP2(), game.getP3(), game.getP4());
-                    playerName.setText(game.getTurn().getPlayer().getName());
-                    archaeologist.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(0).getIsUsed());
-                    assistant.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(1).getIsUsed());
-                    digger.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(2).getIsUsed());
-                    professor.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(3).getIsUsed());
-                    displayInventory(game.getTurn().getPlayer().getPlayersTiles());
-                }else JOptionPane.showMessageDialog(null, game.gameWinner());
+                if(numOfPlayers == 4){
+                    if(!game.gameFinished()){
+                        numOfDraw = 0;
+                        previousChoice = "Nothing";
+                        nextChoice = "Nothing";
+                        game.getTurn().getPlayer().setHasUsedCharacter(false);
+                        numOfTilesTaken = 0;
+                        maxNumOfTilesToTake = 2;
+                        game.getTurn().endTurn(game.getP1(), game.getP2(), game.getP3(), game.getP4());
+                        playerName.setText(game.getTurn().getPlayer().getName());
+                        archaeologist.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(0).getIsUsed());
+                        assistant.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(1).getIsUsed());
+                        digger.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(2).getIsUsed());
+                        professor.setVisible(!game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(3).getIsUsed());
+                        displayInventory(game.getTurn().getPlayer().getPlayersTiles());
+                    }else{
+                        JOptionPane.showMessageDialog(null, game.gameWinner());
+                        game.newGame();
+                        displayTiles();
+                        displayInventory(game.getTurn().getPlayer().getPlayersTiles());
+                        archaeologist.setVisible(true);
+                        assistant.setVisible(true);
+                        digger.setVisible(true);
+                        professor.setVisible(true);
+                    }
+                }else{
+                    if(!game.gameFinished()){
+                        numOfDraw = 0;
+                        previousChoice = "Nothing";
+                        nextChoice = "Nothing";
+                        game.getTurn().getPlayer().setHasUsedCharacter(false);
+                        numOfTilesTaken = 0;
+                        maxNumOfTilesToTake = 2;
+                        for(int i = 0; i < game.getBoard().getAmphoraArea().getSize(); i++){
+                            game.getP2().getPlayersTiles().addTile(game.getBoard().getAmphoraArea().getTile(i));
+                            game.getBoard().getAmphoraArea().clearAll();
+                        }
+                        for(int i = 0; i < game.getBoard().getMosaicArea().getSize(); i++){
+                            game.getP2().getPlayersTiles().addTile(game.getBoard().getMosaicArea().getTile(i));
+                            game.getBoard().getMosaicArea().clearAll();
+                        }
+                        for(int i = 0; i < game.getBoard().getSkeletonArea().getSize(); i++){
+                            game.getP2().getPlayersTiles().addTile(game.getBoard().getSkeletonArea().getTile(i));
+                            game.getBoard().getSkeletonArea().clearAll();
+                        }
+                        for(int i = 0; i < game.getBoard().getStatueArea().getSize(); i++){
+                            game.getP2().getPlayersTiles().addTile(game.getBoard().getStatueArea().getTile(i));
+                            game.getBoard().getStatueArea().clearAll();
+                        }
+                        displayTiles();
+                        drewLandslideTile = false;
+                    }else{
+                        JOptionPane.showMessageDialog(null, game.gameWinner());
+                        game.newGame();
+                        displayTiles();
+                        displayInventory(game.getTurn().getPlayer().getPlayersTiles());
+                        archaeologist.setVisible(true);
+                        assistant.setVisible(true);
+                        digger.setVisible(true);
+                        professor.setVisible(true);
+                        System.out.println(game.getBoard().getLandslideArea());
+                    }
+                }
             }
         }
     }
@@ -236,38 +327,50 @@ public class GUI extends JFrame{
     private class CharacterListener implements ActionListener{
 
         /**
-         * <b>Transformer:</b> doing the character's move when they have been pressed
+         * <b>Transformer:</b> when a character button is pressed it resets the number of tiles taken and sets the max number
+         *                          of tiles the player can take based on the rules. when the assistant is pressed the
+         *                          previous choice is set to "Nothing" so that the player can take one tile from anywhere
          * <b>Postcondition:</b> the character's move has been done
          * @param e
          */
         @Override
         public void actionPerformed(ActionEvent e){
             if(!game.getTurn().getPlayer().getHasUsedCharacter()) {
-                if(e.getSource() == archaeologist){
+                if(e.getSource() == archaeologist && !drewLandslideTile){
                     numOfTilesTaken = 0;
                     maxNumOfTilesToTake = 2;
                     game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(0).setIsUsed(true);
                     archaeologist.setVisible(false);
                     game.getTurn().getPlayer().setHasUsedCharacter(true);
-                }else if (e.getSource() == assistant){
+                    if(previousChoice.equals("Amphora"))
+                        nextChoice = "notAmphora";
+                    else if(previousChoice.equals("Mosaic"))
+                        nextChoice = "notMosaic";
+                    else if(previousChoice.equals("Skeleton"))
+                        nextChoice = "notSkeleton";
+                    else if(previousChoice.equals("Statue"))
+                        nextChoice = "notStatue";
+                    previousChoice = "Something";
+                }else if (e.getSource() == assistant && !drewLandslideTile){
                     numOfTilesTaken = 0;
                     maxNumOfTilesToTake = 1;
                     previousChoice = "Nothing";
                     game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(1).setIsUsed(true);
                     assistant.setVisible(false);
                     game.getTurn().getPlayer().setHasUsedCharacter(true);
-                }else if (e.getSource() == digger){
+                }else if (e.getSource() == digger && !drewLandslideTile){
                     numOfTilesTaken = 0;
                     maxNumOfTilesToTake = 2;
                     game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(2).setIsUsed(true);
                     digger.setVisible(false);
                     game.getTurn().getPlayer().setHasUsedCharacter(true);
-                }else if (e.getSource() == professor){
+                }else if (e.getSource() == professor && !drewLandslideTile){
                     numOfTilesTaken = 0;
-                    maxNumOfTilesToTake = 1;
+                    maxNumOfTilesToTake = 3;
                     game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(3).setIsUsed(true);
                     professor.setVisible(false);
                     game.getTurn().getPlayer().setHasUsedCharacter(true);
+
                 }
             }
         }
@@ -280,63 +383,60 @@ public class GUI extends JFrame{
     private class TileListener implements ActionListener{
 
         /**
-         * <b>Transformer:</b> doing some action after a tile button is pressed
+         * <b>Transformer:</b> when a tile is pressed it disappears from the board and it's being displayed in the player's inventory
+         *                          also it sets the previousChoice to that tile type and increment by one the counter
+         *                          of how many tile the player has taken this turn so that he can't play off the rules
          * <b>Postcondition:</b> the action is done
          * @param e
          */
         @Override
         public void actionPerformed(ActionEvent e){
             if(numOfTilesTaken < maxNumOfTilesToTake){
-                if(game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(0).getIsUsed()){
-                    if(previousChoice.equals("Amphora")){
-                        previousChoice = "Nothing";
-
-                    }
-                }else if(game.getTurn().getPlayer().getCharacterBundle().getCharacters().get(3).getIsUsed()){
-
-                }else{
-                    if(previousChoice.equals("Amphora") || previousChoice.equals("Nothing")){
-                        for(int i = 0; i < game.getBoard().getAmphoraArea().getSize(); i++){
-                            if(e.getSource() == amphoraButtons.get(i)){
-                                previousChoice = "Amphora";
-                                game.getTurn().getPlayer().getPlayersTiles().addTile(game.getBoard().getAmphoraArea().getTile(i));
-                                displayInventory(game.getTurn().getPlayer().getPlayersTiles());
-                                amphoraButtons.get(i).setVisible(false);
-                                numOfTilesTaken++;
-                            }
+                if((previousChoice.equals("Amphora") || previousChoice.equals("Nothing") || (!nextChoice.equals("notAmphora") && !nextChoice.equals("Nothing"))) && !drewLandslideTile){
+                    for(int i = 0; i < game.getBoard().getAmphoraArea().getSize(); i++){
+                        if(e.getSource() == amphoraButtons.get(i)){
+                            previousChoice = "Amphora";
+                            nextChoice = "Nothing";
+                            game.getTurn().getPlayer().getPlayersTiles().addTile(game.getBoard().getAmphoraArea().getTile(i));
+                            displayInventory(game.getTurn().getPlayer().getPlayersTiles());
+                            amphoraButtons.get(i).setVisible(false);
+                            numOfTilesTaken++;
                         }
                     }
-                    if(previousChoice.equals("Mosaic") || previousChoice.equals("Nothing")){
-                        for(int i = 0; i < game.getBoard().getMosaicArea().getSize(); i++){
-                            if(e.getSource() == mosaicButtons.get(i)){
-                                previousChoice = "Mosaic";
-                                game.getTurn().getPlayer().getPlayersTiles().addTile(game.getBoard().getMosaicArea().getTile(i));
-                                displayInventory(game.getTurn().getPlayer().getPlayersTiles());
-                                mosaicButtons.get(i).setVisible(false);
-                                numOfTilesTaken++;
-                            }
+                }
+                if((previousChoice.equals("Mosaic") || previousChoice.equals("Nothing") || (!nextChoice.equals("notMosaic") && !nextChoice.equals("Nothing"))) && !drewLandslideTile){
+                    for(int i = 0; i < game.getBoard().getMosaicArea().getSize(); i++){
+                        if(e.getSource() == mosaicButtons.get(i)){
+                            previousChoice = "Mosaic";
+                            nextChoice = "Nothing";
+                            game.getTurn().getPlayer().getPlayersTiles().addTile(game.getBoard().getMosaicArea().getTile(i));
+                            displayInventory(game.getTurn().getPlayer().getPlayersTiles());
+                            mosaicButtons.get(i).setVisible(false);
+                            numOfTilesTaken++;
                         }
                     }
-                    if(previousChoice.equals("Skeleton") || previousChoice.equals("Nothing")){
-                        for(int i = 0; i < game.getBoard().getSkeletonArea().getSize(); i++){
-                            if(e.getSource() == skeletonButtons.get(i)){
-                                previousChoice = "Skeleton";
-                                game.getTurn().getPlayer().getPlayersTiles().addTile(game.getBoard().getSkeletonArea().getTile(i));
-                                displayInventory(game.getTurn().getPlayer().getPlayersTiles());
-                                skeletonButtons.get(i).setVisible(false);
-                                numOfTilesTaken++;
-                            }
+                }
+                if((previousChoice.equals("Skeleton") || previousChoice.equals("Nothing") || (!nextChoice.equals("notSkeleton") && !nextChoice.equals("Nothing"))) && !drewLandslideTile){
+                    for(int i = 0; i < game.getBoard().getSkeletonArea().getSize(); i++){
+                        if(e.getSource() == skeletonButtons.get(i)){
+                            previousChoice = "Skeleton";
+                            nextChoice = "Nothing";
+                            game.getTurn().getPlayer().getPlayersTiles().addTile(game.getBoard().getSkeletonArea().getTile(i));
+                            displayInventory(game.getTurn().getPlayer().getPlayersTiles());
+                            skeletonButtons.get(i).setVisible(false);
+                            numOfTilesTaken++;
                         }
                     }
-                    if(previousChoice.equals("Statue") || previousChoice.equals("Nothing")){
-                        for(int i = 0; i < game.getBoard().getStatueArea().getSize(); i++){
-                            if(e.getSource() == statueButtons.get(i)){
-                                previousChoice = "Statue";
-                                game.getTurn().getPlayer().getPlayersTiles().addTile(game.getBoard().getStatueArea().getTile(i));
-                                displayInventory(game.getTurn().getPlayer().getPlayersTiles());
-                                statueButtons.get(i).setVisible(false);
-                                numOfTilesTaken++;
-                            }
+                }
+                if((previousChoice.equals("Statue") || previousChoice.equals("Nothing") || (!nextChoice.equals("notStatue") && !nextChoice.equals("Nothing"))) && !drewLandslideTile){
+                    for(int i = 0; i < game.getBoard().getStatueArea().getSize(); i++){
+                        if(e.getSource() == statueButtons.get(i)){
+                            previousChoice = "Statue";
+                            nextChoice = "Nothing";
+                            game.getTurn().getPlayer().getPlayersTiles().addTile(game.getBoard().getStatueArea().getTile(i));
+                            displayInventory(game.getTurn().getPlayer().getPlayersTiles());
+                            statueButtons.get(i).setVisible(false);
+                            numOfTilesTaken++;
                         }
                     }
                 }

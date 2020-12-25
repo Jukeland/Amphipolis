@@ -47,6 +47,34 @@ public class Board{
     }
 
     /**
+     * <b>Transformer:</b> remove all tiles from the 4 finding areas and initializes the landslide area with 8 tiles
+     * <b>Postcondition:</b> all areas have been initialized
+     * @param b
+     */
+    public void init_solo(Bag b){
+        AmphoraArea.clearAll();
+        MosaicArea.clearAll();
+        SkeletonArea.clearAll();
+        StatueArea.clearAll();
+        LandslideArea.clearAll();
+        int num = 0;
+        for(int i = 0; i < b.getSize(); i++){
+            if(b.getTile(i).getType() == TileType.LANDSLIDE && num < 8) {
+                LandslideArea.addTile(b.getTile(i));
+                b.removeTile(b.getTile(i));
+                num++;
+            }
+        }
+        num = 0;
+        for(int i = 0; i < b.getSize(); i++){
+            if(b.getTile(i).getType() == TileType.LANDSLIDE && num <4){
+                b.removeTile(b.getTile(i));
+                num++;
+            }
+        }
+    }
+
+    /**
      * <b>Transformer:</b> removes all tiles from all areas for a new game to begin
      * <b>Postcondition:</b> all the tiles from all areas have been removed
      */

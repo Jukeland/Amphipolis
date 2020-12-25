@@ -9,17 +9,23 @@ public class CharacterBundle{
      * <b>Constructor:</b> creates a new array list of characters
      * <b>Postcondition:</b> a new array list of characters has been created
      */
-    public CharacterBundle(){ this.characters = new ArrayList<>(); }
+    public CharacterBundle(){
+        this.characters = new ArrayList<>();
+        characters.add(new Archaeologist(false));
+        characters.add(new Assistant(false));
+        characters.add(new Digger(false));
+        characters.add(new Professor(false));
+    }
 
     /**
      * <b>Transformer:</b> initializes the character bundle
      * <b>Postcondition:</b> the character bundle has been initialized
      */
     public void init_characters(){
-        characters.add(new Archaeologist(false));
-        characters.add(new Assistant(false));
-        characters.add(new Digger(false));
-        characters.add(new Professor(false));
+        characters.get(0).setIsUsed(false);
+        characters.get(1).setIsUsed(false);
+        characters.get(2).setIsUsed(false);
+        characters.get(3).setIsUsed(false);
     }
 
     /**

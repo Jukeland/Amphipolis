@@ -203,7 +203,7 @@ public class Player{
      * <b>Transformer:</b> initializes the player for a new game.
      * <b>Postcondiion:</b> the player has been initialized.
      */
-    public void initPlayer(){
+    public void init_Player(){
         characterBundle.init_characters();
         this.hasUsedCharacter = false;
         this.playersTiles.clearAll();

@@ -6,6 +6,13 @@ public class Turn{
     private Player player;
 
     /**
+     * <b>Constructor:</b> creates a new instance of Turn with only one player
+     * <b>Postcondition:</b> the Turn has been instantiated
+     * @param P1
+     */
+    public Turn(Player P1){ player = P1; }
+
+    /**
      * <b>Constructor:</b> creates a new instance of Turn and initializes the player randomly
      * <b>Postcondition:</b> the player has been initialized
      * @param P1

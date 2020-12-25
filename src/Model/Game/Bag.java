@@ -25,6 +25,7 @@ public class Bag{
      * <b>Postcondition:</b> All the tiles have been initialized and shuffled.
      */
     public void init_tiles(){
+        tiles.clear();
         for(int i = 0; i < 24; i++){                                    //initializes landslide tiles
             tiles.add(new LandslideTile());
         }
@@ -51,7 +52,6 @@ public class Bag{
             }
         }
 
-        Collections.shuffle(tiles);
         Collections.shuffle(tiles);
         Collections.shuffle(tiles);
         Collections.shuffle(tiles);
