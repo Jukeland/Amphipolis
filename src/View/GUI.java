@@ -3,7 +3,6 @@ package View;
 import Controller.Controller;
 import Model.Game.Bag;
 import Model.Tiles.TileType;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -231,6 +230,7 @@ public class GUI extends JFrame{
                         assistant.setVisible(true);
                         digger.setVisible(true);
                         professor.setVisible(true);
+                        numOfDraw = 0;
                     }
                 }else{
                     if(!game.gameFinished() && numOfDraw == 0){
@@ -242,7 +242,7 @@ public class GUI extends JFrame{
                         }
                         game.getBoard().addToAreas(game.getTurn().getPlayer().getPlayersTiles());
                         displayTiles();
-                    }else{
+                    }else if(game.gameFinished()){
                         JOptionPane.showMessageDialog(null, game.gameWinner());
                         game.newGame();
                         displayTiles();
@@ -251,6 +251,7 @@ public class GUI extends JFrame{
                         assistant.setVisible(true);
                         digger.setVisible(true);
                         professor.setVisible(true);
+                        numOfDraw = 0;
                     }
                 }
             }else if(e.getSource() == EndTurn){
@@ -278,6 +279,7 @@ public class GUI extends JFrame{
                         assistant.setVisible(true);
                         digger.setVisible(true);
                         professor.setVisible(true);
+                        numOfDraw = 0;
                     }
                 }else{
                     if(!game.gameFinished()){
