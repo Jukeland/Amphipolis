@@ -1,6 +1,6 @@
 # Amphipolis
 
-When you run the code (through an IDE, unfortunately I wasn't able to create an executable file yet) a window pops up where you can input the 
+When you run the code by double-clicking the Amphipolis.jar file or through an IDE by running the Main class, a window pops up where you can input the 
 number of players you want to play with (1 or 4, 1 means that the other player is the computer). After that the game pops up based on what you 
 picked or the programm terminates if you clicked Cancel or the X button.
 
